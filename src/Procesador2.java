@@ -18,6 +18,11 @@ import java.awt.GraphicsEnvironment;
  * Procesador de texto basico con StyledEditorKit;
  */
 
+//TODO Menu Archivo (Guardar, Guardar como, Salir
+//TODO Integrar las funciones de StyledEditorKit con la posibilidad de cambiar la fuente sin seleccionar
+//TODO EN CURSO: Menu Edicion ( Cortar/Copiar/Pegar insertar imagen)
+//TODO Cambiar el menu fuente a un desplegable, tamaño y estilo a un combobox en una toolbar
+
 public class Procesador2 {
 
 	public static void main(String[] args) {
@@ -48,6 +53,8 @@ class Panel1 extends JPanel{
 	//	add(central,BorderLayout.CENTER);
 		//Menu principal
 		menu=new JMenuBar();
+		archivo= new JMenu("Archivo");
+		edicion= new JMenu("Edicion");
 		fuente= new JMenu("Fuente");
 		estilo= new JMenu("Estilo");
 		tamano= new JMenu("Tamaño");
@@ -62,7 +69,13 @@ class Panel1 extends JPanel{
 	}
 	
 	public void menu(){
-
+		//Menu Archivo
+		
+		//Menu Edicion
+		for (int i = 0; i < menuEdicion.length; i++) {
+			JMenuItem mItemEdicion = new JMenuItem(menuEdicion[i],new ImageIcon("bin/iconos/"+iconosMenuEdicion[i]));
+			edicion.add(mItemEdicion);
+		}
 		//Fuentes
 		//Menu popup que muestra todas las fuentes
 		fuente.getPopupMenu().setLayout(new GridLayout(20,10));
@@ -95,6 +108,8 @@ class Panel1 extends JPanel{
 		}
 		//---------------------------------------------
 		
+		menu.add(archivo);
+		menu.add(edicion);
 		menu.add(fuente);
 		menu.add(estilo);
 		menu.add(tamano);
@@ -111,7 +126,7 @@ class Panel1 extends JPanel{
 		add(cuadroText,BorderLayout.CENTER);
 		//cuadroText.setMaximumSize(new Dimension(central.getParent().getWidth(), 0));
 	}
-	
+
 	
 //	class Fuente implements ActionListener{
 //		public Fuente (String accion) {
@@ -163,10 +178,12 @@ class Panel1 extends JPanel{
 //	}
 
 	private JMenuBar menu;
-	JMenu fuente,estilo,tamano;
+	JMenu archivo,edicion,fuente,estilo,tamano;
+	private String[] menuEdicion = {"Cortar","Copiar","Pergar","Insertar Imagen"};
 	//Array con el nombre de las fuentes
 	private String[] nombresDeFuentes = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
 	private String[] setEstilos = {"Negrita","Cursiva"};
+	private String[] iconosMenuEdicion = {"cortar.png","copiar.png","pegar.png","insertar.png"};
 	//Array con tamaños de fuente
 	private int[] setTamanos= {8,10,12,14,16,18,20,22,24};
 	private JTextPane cuadroText;
