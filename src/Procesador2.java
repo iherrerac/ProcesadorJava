@@ -1,7 +1,11 @@
 
+import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JTextPane;
 import javax.swing.text.StyledEditorKit;
 import javax.swing.JMenuBar;
@@ -22,6 +26,9 @@ import java.awt.GraphicsEnvironment;
 //TODO Integrar las funciones de StyledEditorKit con la posibilidad de cambiar la fuente sin seleccionar
 //TODO EN CURSO: Menu Edicion ( Cortar/Copiar/Pegar insertar imagen)
 //TODO Cambiar el menu fuente a un desplegable, tamaño y estilo a un combobox en una toolbar
+//TODO el Menu emergente no interactua con los check del Menu Estilo
+// (14/12/2021) Creamos menu edicion con imagenes. Agregamos JRadioButtonMenu y JCheckBoxMenu a tamaño y Estilo 
+// (14/12/2021) Agregamos Menu Emergente en JTextPane con opciones Negrita/Cursiva 
 
 public class Procesador2 {
 
@@ -61,6 +68,7 @@ class Panel1 extends JPanel{
 				
 		cuadroTexto();
 		menu();
+		MenuEmergente();
 		
 		checkNegrita=0;
 		checkCursiva=0;
@@ -86,10 +94,10 @@ class Panel1 extends JPanel{
 			fuente.add(fuenteMenu);
 		}
 
-		
 		//Estilos 
 		for (int i = 0; i < setEstilos.length; i++) {
-			JMenuItem estiloMenu = new JMenuItem (setEstilos[i]);
+			//JMenuItem estiloMenu = new JMenuItem (setEstilos[i]);
+			JCheckBoxMenuItem estiloMenu = new JCheckBoxMenuItem (setEstilos[i],new ImageIcon("bin/iconos/"+iconosMenuEstilos[i]));
 			if (setEstilos[i].equalsIgnoreCase("negrita")){
 				estiloMenu.addActionListener(new StyledEditorKit.BoldAction());
 			} else {
@@ -100,9 +108,12 @@ class Panel1 extends JPanel{
 
 		//Tamaño 
 		//Declaramos y agregamos botones tamaño
+		ButtonGroup grupoTamMenu = new ButtonGroup();
 		for (int i = 0; i < setTamanos.length; i++) {
-			JMenuItem tmenu = new JMenuItem(""+setTamanos[i]);
-			//tmenu.addActionListener(new Fuente("Tamaños"));  
+			//JMenuItem tmenu = new JMenuItem(""+setTamanos[i]);
+			JRadioButtonMenuItem tmenu = new JRadioButtonMenuItem(""+setTamanos[i]);
+			//tmenu.addActionListener(new Fuente("Tamaños")); 
+			grupoTamMenu.add(tmenu);
 			tmenu.addActionListener(new StyledEditorKit.FontSizeAction("cambiatamaño", setTamanos[i]));  
 			tamano.add(tmenu);
 		}
@@ -119,6 +130,24 @@ class Panel1 extends JPanel{
 		add(menu,BorderLayout.NORTH);
 
 	}
+	
+	//Menu Emergente
+	public void MenuEmergente() {
+		menuEmergente = new JPopupMenu();
+		for (int i = 0; i < setEstilos.length; i++) {
+			JMenuItem itemEmergente = new JMenuItem(setEstilos[i]);
+			
+			if (setEstilos[i].equalsIgnoreCase("negrita")){
+				itemEmergente.addActionListener(new StyledEditorKit.BoldAction());
+			} else {
+				itemEmergente.addActionListener(new StyledEditorKit.ItalicAction());
+			}
+			menuEmergente.add(itemEmergente);	
+		}
+		//asociamos el JTextPane con el menu emergente.
+		cuadroText.setComponentPopupMenu(menuEmergente);
+	}
+	
 	public void cuadroTexto() {
 		cuadroText= new JTextPane();
 		//central.add(cuadroText);
@@ -183,14 +212,17 @@ class Panel1 extends JPanel{
 	//Array con el nombre de las fuentes
 	private String[] nombresDeFuentes = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
 	private String[] setEstilos = {"Negrita","Cursiva"};
-	private String[] iconosMenuEdicion = {"cortar.png","copiar.png","pegar.png","insertar.png"};
 	//Array con tamaños de fuente
 	private int[] setTamanos= {8,10,12,14,16,18,20,22,24};
+	//Iconos
+	private String[] iconosMenuEdicion = {"cortar.png","copiar.png","pegar.png","insertar.png"};
+	private String[] iconosMenuEstilos = {"negrita.png","cursiva.png"};
+
 	private JTextPane cuadroText;
 	private int es;
 	private int checkNegrita;
 	private int checkCursiva;
 	private int checkSubrallado;
-
+	private JPopupMenu menuEmergente; 
 	//private JPanel central;
 }
