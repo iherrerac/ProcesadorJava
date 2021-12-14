@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JTextPane;
+import javax.swing.KeyStroke;
 import javax.swing.text.StyledEditorKit;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
@@ -29,6 +30,7 @@ import java.awt.GraphicsEnvironment;
 //TODO el Menu emergente no interactua con los check del Menu Estilo
 // (14/12/2021) Creamos menu edicion con imagenes. Agregamos JRadioButtonMenu y JCheckBoxMenu a tamaño y Estilo 
 // (14/12/2021) Agregamos Menu Emergente en JTextPane con opciones Negrita/Cursiva 
+// (14/12/2021) Agregamos Atajo de letras a los estilos (105 y 109)
 
 public class Procesador2 {
 
@@ -99,8 +101,12 @@ class Panel1 extends JPanel{
 			//JMenuItem estiloMenu = new JMenuItem (setEstilos[i]);
 			JCheckBoxMenuItem estiloMenu = new JCheckBoxMenuItem (setEstilos[i],new ImageIcon("bin/iconos/"+iconosMenuEstilos[i]));
 			if (setEstilos[i].equalsIgnoreCase("negrita")){
+				//Agregar atajo teclado CTRL+N 
+				estiloMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N,InputEvent.CTRL_DOWN_MASK));
 				estiloMenu.addActionListener(new StyledEditorKit.BoldAction());
 			} else {
+				//Agregar atajo teclado CTRL+K
+				estiloMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_K,InputEvent.CTRL_DOWN_MASK));
 				estiloMenu.addActionListener(new StyledEditorKit.ItalicAction());
 			}
 			estilo.add(estiloMenu);
@@ -114,7 +120,7 @@ class Panel1 extends JPanel{
 			JRadioButtonMenuItem tmenu = new JRadioButtonMenuItem(""+setTamanos[i]);
 			//tmenu.addActionListener(new Fuente("Tamaños")); 
 			grupoTamMenu.add(tmenu);
-			tmenu.addActionListener(new StyledEditorKit.FontSizeAction("cambiatamaño", setTamanos[i]));  
+			tmenu.addActionListener(new StyledEditorKit.FontSizeAction("cambiatamaño", setTamanos[i]));
 			tamano.add(tmenu);
 		}
 		//---------------------------------------------
