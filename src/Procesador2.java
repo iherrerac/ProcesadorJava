@@ -41,6 +41,12 @@ import java.awt.GraphicsEnvironment;
 // (15/12/2021) Agregamos una lamina panelNorte gridlayout
 // (15/12/2021) Agregamos metodo estiloListener para no tener que repetir el if seleccionando el metodo al agregar el listener a menu,menuemergente o menuherramientas
 // (15/12/2021) Agregamos menu de herramientas Colores
+// (16/12/2021) Agregamos funcionalidad menu de herramientas Colores (215 -220)
+// (16/12/2021) Agregamos menu de herramientas y funcionalidad  Alineacion (-)
+// (16/12/2021) Rehacemos el switch de la funcion estiloListener para que este mas optimizada
+// (16/12/2021) Creamos metodo menuHerraBoton para optimizar el codigo del menu Herramientas
+// (16/12/2021) Creamos metodo menuBoton para optimizar el codigo de creacion de los JMenuItems del menu (Edicion,Fuentes)
+
 
 public class Procesador2 {
 
@@ -67,25 +73,16 @@ class Marco1 extends JFrame{
 class Panel1 extends JPanel{
 	public Panel1 () {
 		setLayout(new BorderLayout());
+		//Paneles
 		panelNorte= new JPanel(new GridLayout(2,1,0,1));
-	
 		add(panelNorte,BorderLayout.NORTH);
 		
-	// Codigo para agregar a lamina central, pero complica el ejercicio, no toma el tamaño de la lamina
-	//	central = new JPanel();
-	//	add(central,BorderLayout.CENTER);
-		
-
-				
+		//Llamada a metodos
 		cuadroTexto();
 		menu();
 		MenuEmergente();
 		menuHerramientas();
-		
-//		checkNegrita=0;
-//		checkCursiva=0;
-//		checkSubrallado=0;
-//		es=0;
+
 	}
 	
 	public void menu(){
@@ -101,34 +98,33 @@ class Panel1 extends JPanel{
 		
 		//Menu Edicion
 		for (int i = 0; i < menuEdicion.length; i++) {
-			JMenuItem mItemEdicion = new JMenuItem(menuEdicion[i],new ImageIcon(iconosMenuEdicion[i]));
-			edicion.add(mItemEdicion);
+//			JMenuItem mItemEdicion = new JMenuItem(menuEdicion[i],new ImageIcon(iconosMenuEdicion[i]));
+//			edicion.add(mItemEdicion);
+			menuBoton(menuEdicion[i],new ImageIcon(iconosMenuEdicion[i]),"mEdicion");
 		}
 		//Fuentes
 		//Menu popup que muestra todas las fuentes
 		fuente.getPopupMenu().setLayout(new GridLayout(20,10));
 		for (int i = 0; i < nombresDeFuentes.length; i++) {
-			JMenuItem fuenteMenu = new JMenuItem(nombresDeFuentes[i]);
-			//fuenteMenu.addActionListener(new Fuente("fuente"));
-			fuenteMenu.addActionListener(new StyledEditorKit.FontFamilyAction("cambiafuente",nombresDeFuentes[i]));
-			fuente.add(fuenteMenu);
+//			JMenuItem fuenteMenu = new JMenuItem(nombresDeFuentes[i]);
+//			fuenteMenu.addActionListener(new StyledEditorKit.FontFamilyAction("cambiafuente",nombresDeFuentes[i]));
+//			fuente.add(fuenteMenu);
+			menuBoton(nombresDeFuentes[i],new ImageIcon(),"mFuentes");
 		}
 
 		//Estilos 
 		for (int i = 0; i < setEstilos.length; i++) {
-			//JMenuItem estiloMenu = new JMenuItem (setEstilos[i]);
 			JCheckBoxMenuItem estiloMenu = new JCheckBoxMenuItem (setEstilos[i],new ImageIcon(iconosMenuEstilos[i]));
+			estiloMenu.addActionListener(menuListener("Estilo",setEstilos[i]));
+			
 			if (setEstilos[i].equalsIgnoreCase("negrita")){
 				//Agregar atajo teclado CTRL+N 
 				estiloMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N,InputEvent.CTRL_DOWN_MASK));
-				estiloMenu.addActionListener(estiloListener(setEstilos[i]));
 			} else if (setEstilos[i].equalsIgnoreCase("cursiva")){
 				//Agregar atajo teclado CTRL+K
 				estiloMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_K,InputEvent.CTRL_DOWN_MASK));
-				estiloMenu.addActionListener(estiloListener(setEstilos[i]));
 			} else {
 				estiloMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,InputEvent.CTRL_DOWN_MASK));
-				estiloMenu.addActionListener(estiloListener(setEstilos[i]));
 			}
 			estilo.add(estiloMenu);
 		}
@@ -163,7 +159,7 @@ class Panel1 extends JPanel{
 		menuEmergente = new JPopupMenu();
 		for (int i = 0; i < setEstilos.length; i++) {
 			JMenuItem itemEmergente = new JMenuItem(setEstilos[i]);
-			itemEmergente.addActionListener(estiloListener(setEstilos[i]));
+			itemEmergente.addActionListener(menuListener("Estilo",setEstilos[i]));
 			menuEmergente.add(itemEmergente);	
 		}
 		//asociamos el JTextPane con el menu emergente.
@@ -173,20 +169,50 @@ class Panel1 extends JPanel{
 	public void menuHerramientas() {
 		menuHerra = new JToolBar();
 		for ( int i = 0; i < setEstilos.length; i++) {
-			JButton menuHerraEstiloBoton = new JButton(setEstilos[i], new ImageIcon(iconosMenuEstilos[i]));
-			menuHerraEstiloBoton.addActionListener(estiloListener(setEstilos[i]));
-			menuHerra.add(menuHerraEstiloBoton);
-		}
-		
-		for (int i = 0; i < menuColor.length; i++) {
-			JButton menuHerraColorBoton = new JButton("",new ImageIcon(iconosMenucolor[i]));
-			menuHerraColorBoton.addActionListener(estiloListener(menuColor[i]));
-			menuHerra.add(menuHerraColorBoton);
+//			JButton menuHerraEstiloBoton = new JButton(setEstilos[i], new ImageIcon(iconosMenuEstilos[i]));
+//			menuHerraEstiloBoton.addActionListener(menuListener("Estilo",setEstilos[i]));
+//			menuHerra.add(menuHerraEstiloBoton);
+			menuHerraBoton(setEstilos[i],new ImageIcon(iconosMenuEstilos[i]),"mhEstilo");
 		}
 		menuHerra.addSeparator();
+		for (int i = 0; i < menuColor.length; i++) {
+//			JButton menuHerraColorBoton = new JButton("",new ImageIcon(iconosMenucolor[i]));
+//			menuHerraColorBoton.addActionListener(menuListener("Color",menuColor[i]));
+//			menuHerra.add(menuHerraColorBoton);
+			menuHerraBoton(menuColor[i],new ImageIcon(iconosMenucolor[i]),"mhColor");
+		}
+		menuHerra.addSeparator();
+		for (int i = 0; i < menuAlinea.length; i++) {
+//			JButton menuHerraAlineaBoton = new JButton("",new ImageIcon(iconosMenuAlinea[i]));
+//			menuHerraAlineaBoton.addActionListener(menuListener("Alinea",menuAlinea[i]));
+//			menuHerra.add(menuHerraAlineaBoton);
+			menuHerraBoton(menuAlinea[i],new ImageIcon(iconosMenuAlinea[i]),"mhAlinea");
+		}
 		
 		panelNorte.add(menuHerra);
 		
+	}
+	public void menuBoton(String nombreBoton, ImageIcon icono, String opcion) {
+		JMenuItem menuItem = new JMenuItem(nombreBoton,icono);
+		menuItem.addActionListener(menuListener(opcion,nombreBoton));
+		switch (opcion) {
+		case "mFuentes":
+			fuente.add(menuItem);
+			break;
+		case "mEdicion":
+			edicion.add(menuItem);
+			break;
+			
+		default:
+			break;
+		}
+		
+	}
+	
+	public void menuHerraBoton(String nombreBoton, ImageIcon icono, String opcion) {
+		JButton menuHerraJButton = new JButton("",icono);
+		menuHerraJButton.addActionListener(menuListener(opcion,nombreBoton));
+		menuHerra.add(menuHerraJButton);	
 	}
 	
 	public void cuadroTexto() {
@@ -199,76 +225,44 @@ class Panel1 extends JPanel{
 	
 	
 	//Metodo para determinar el oyente de estilo
-	public ActionListener estiloListener(String estilo) {
-		switch (estilo) {
-		case "Negrita":
-			return new StyledEditorKit.BoldAction();
+	public ActionListener menuListener(String opcion, String accion) {
+		switch (opcion) {
+		case "mFuentes":
+			return new StyledEditorKit.FontFamilyAction("cambiafuente",accion);
+		
+		case "mEdicion"://TODO Pendiente
+			return new StyledEditorKit.FontFamilyAction("cambiafuente",accion);
 			
-		case "Cursiva":
-			return new StyledEditorKit.ItalicAction();
+		case"mhEstilo":
+			
+			if(accion.equalsIgnoreCase("Negrita")){
+				return new StyledEditorKit.BoldAction();
+			} else if(accion.equalsIgnoreCase("Cursiva")){
+				return new StyledEditorKit.ItalicAction();
+			} else if (accion.equalsIgnoreCase("Subrallado")){
+					return new StyledEditorKit.UnderlineAction();
+			}
 		
-		case "Subrallado":
-			return new StyledEditorKit.UnderlineAction();	
-		
+		case "mhColor":
+			//Un for que recorre array de menuColor lo compara con el boton y establece la accion
+			for (int i=0; i<menuColor.length;i++) {
+				if (accion.equalsIgnoreCase(menuColor[i])){
+					return new StyledEditorKit.ForegroundAction(menuColor[i],setColor[i]);
+				}
+			}
+		case "mhAlinea":
+			for (int i = 0; i < menuAlinea.length; i++) {
+					if(accion.equalsIgnoreCase(menuAlinea[i])) {
+						return new StyledEditorKit.AlignmentAction(menuAlinea[i],i);
+					}
+			}
+			
 		default:
 			return null;
 		}
 		
-//		if (estilo.equalsIgnoreCase("negrita")){
-//			return new StyledEditorKit.BoldAction();
-//		} else if(estilo.equalsIgnoreCase("cursiva")){
-//			return new StyledEditorKit.ItalicAction();
-//		}else return new StyledEditorKit.UnderlineAction();	
 	}
 	
-//	class Fuente implements ActionListener{
-//		public Fuente (String accion) {
-//			this.accion = accion;
-//			editorestilo = new StyledEditorKit();
-//		}
-//		
-//		@Override
-//		public void actionPerformed(ActionEvent e) {
-//			
-//			switch (accion) {
-//			case "fuente":
-//				cuadroText.setFont(new Font(e.getActionCommand(),cuadroText.getFont().getStyle(),cuadroText.getFont().getSize()));	
-//				break;
-//			case "estilos":
-//				if (e.getActionCommand().equalsIgnoreCase("negrita")) {
-//					if (checkNegrita == 0) {
-//						es += Font.BOLD;
-//						checkNegrita =1;
-//					} else {
-//						es-=Font.BOLD;
-//						checkNegrita =0;
-//					}
-//				}
-//				else if(e.getActionCommand().equalsIgnoreCase("cursiva")) {
-//					if (checkCursiva == 0) {
-//						es += Font.ITALIC;
-//						checkCursiva =1;
-//					} else {
-//						es-=Font.ITALIC;
-//						checkCursiva =0;
-//					}
-//				} 
-//				cuadroText.setFont(new Font(cuadroText.getFont().getName(),es,cuadroText.getFont().getSize()));
-//				break;
-//			
-//			case "Tamaños":
-//				cuadroText.setFont(new Font(cuadroText.getFont().getName(),cuadroText.getFont().getStyle(),Integer.parseInt(e.getActionCommand())));
-//				break;
-//			
-//			default:
-//				break;
-//			}
-//
-//		}
-//		
-//		private String accion;
-//
-//	}
 	//Declaracion de Variables
 	//Paneles
 	JPanel panelNorte;
@@ -284,12 +278,15 @@ class Panel1 extends JPanel{
 	private String[] menuEdicion = {"Cortar","Copiar","Pergar","Insertar Imagen"};
 	private String[] setEstilos = {"Negrita","Cursiva","Subrallado"};
 	private String[] menuColor = {"Negro","Naranja","Rosa","Verde","Azul","Amarillo","Blanco"};
+	private String[] menuAlinea = {"Izquierda","Centrar","Derecha","Justificar"};
+	
 	private Color[] setColor= {Color.BLACK,Color.ORANGE,Color.PINK,Color.GREEN,Color.BLUE,Color.YELLOW,Color.WHITE};
 	private int[] setTamanos= {8,10,12,14,16,18,20,22,24};
 	//Iconos
 	private String[] iconosMenuEdicion = {"bin/iconos/cortar.png","bin/iconos/copiar.png","bin/iconos/pegar.png","bin/iconos/insertar.png"};
 	private String[] iconosMenuEstilos = {"bin/iconos/negrita.png","bin/iconos/cursiva.png","bin/iconos/subrallado.jpg"};
 	private String[] iconosMenucolor = {"bin/iconos/colores/negro.png","bin/iconos/colores/naranja.png","bin/iconos/colores/rosa.png","bin/iconos/colores/verde.png","bin/iconos/colores/azul.png","bin/iconos/colores/amarillo.png","bin/iconos/colores/blanco.png"};
+	private String[] iconosMenuAlinea = {"bin/iconos/alineacion/AIzquierda.png","bin/iconos/alineacion/ACentrar.png","bin/iconos/alineacion/ADerecha.png", "bin/iconos/alineacion/AJustificada.png"};
 
 	private JTextPane cuadroText;
 
